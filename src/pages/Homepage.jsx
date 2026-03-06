@@ -1,11 +1,15 @@
 import Card from '../components/Card';  
-import { products } from "../data/products";
 import axios from 'axios';
+import { useEffect ,useState} from 'react';
 const Homepage = () => {
-axios.get("http://localhost:3000/api/products")
+  const [products,setProducts]=useState([]);
+  useEffect(()=>{
+    axios.get("http://localhost:3000/api/products")
 .then((response)=>{
-    console.log(response.data);
+    setProducts(response.data);
 })
+  },[])
+
 
     return (
          <>
