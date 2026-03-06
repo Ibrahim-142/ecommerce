@@ -33,23 +33,4 @@ export const shoppingcart = [
     rating: 4.6,
     reviewCount: 189,
   },
-  {
-    id: "wool-blazer-01",
-    name: "Tailored Wool Blazer",
-    description:
-      "Structured wool blazer ideal for business and formal occasions.",
-    longDescription:
-      "Made from premium merino wool, this tailored blazer offers a sharp silhouette and timeless appeal.",
-    price: 249,
-    category: "clothing",
-    subcategory: "blazers",
-    colors: ["Navy", "Charcoal", "Camel"],
-    sizes: ["S", "M", "L", "XL"],
-    inStock: false,
-    stockCount: 0,
-    image:
-      "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?q=80&w=400&auto=format&fit=crop",
-    rating: 4.9,
-    reviewCount: 312,
-  },
 ];
