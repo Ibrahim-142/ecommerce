@@ -2,13 +2,9 @@ export const shoppingcart = [
   {
     id: "linen-shirt-01",
     name: "Italian Linen Shirt",
-    description:
-      "Lightweight, breathable linen shirt perfect for summer occasions.",
-    longDescription:
-      "Crafted from 100% Italian linen, this shirt offers effortless elegance with a relaxed fit and refined details.",
+        longDescription: "Crafted from 100% Italian linen, this shirt is the epitome of effortless elegance. The relaxed fit drapes beautifully, while the mother-of-pearl buttons add a refined touch. Perfect for beach weddings, summer brunches, or any occasion where you want to look polished without overheating.",
     price: 129,
     category: "clothing",
-    subcategory: "shirts",
     colors: ["White", "Sky Blue", "Sage Green", "Sand"],
     sizes: ["S", "M", "L", "XL", "XXL"],
     inStock: true,
