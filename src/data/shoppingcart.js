@@ -3,7 +3,7 @@ export const shoppingcart = [
     id: "linen-shirt-01",
     name: "Italian Linen Shirt",
         longDescription: "Crafted from 100% Italian linen, this shirt is the epitome of effortless elegance. The relaxed fit drapes beautifully, while the mother-of-pearl buttons add a refined touch. Perfect for beach weddings, summer brunches, or any occasion where you want to look polished without overheating.",
-    price: 129,
+    price: 12998,
     category: "clothing",
     count:2,
     colors: ["White", "Sky Blue", "Sage Green", "Sand"],

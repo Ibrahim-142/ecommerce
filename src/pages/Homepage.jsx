@@ -1,6 +1,7 @@
 import Card from '../components/Card';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import {formatMoney}from '../utils/money';
 const Homepage = () => {
   const [products, setProducts] = useState([]);
   useEffect(() => {
@@ -20,7 +21,7 @@ const Homepage = () => {
               key={index}
               image={product.image}
               name={product.name}
-              price={product.price}
+              price={formatMoney(product.price)}
               description={product.description}
             />
           ))}

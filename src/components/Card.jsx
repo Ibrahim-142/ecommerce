@@ -17,7 +17,7 @@ const Card = ({ image, name, price, description }) => {
         <div className="flex items-center justify-between mb-2">
           <p className="text-slate-800 font-semibold text-base">{name}</p>
           <p className="text-cyan-600 font-semibold text-base">
-            ${price.toFixed(2)}
+            {price}
           </p>
         </div>
         <p className="text-slate-600 text-sm font-light mb-4">

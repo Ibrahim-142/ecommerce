@@ -2,18 +2,19 @@ import React from "react";
 import { Link } from "react-router";
 import CartItem from "./CartItem";
 const ShoppingCart = ({cart}) => {
+    const totalItems = cart.reduce((sum, item) => sum + item.count, 0);
   return (
     <div className="w-full sm:w-3/4 bg-white px-6 sm:px-10 py-10">
       {/* Header */}
       <div className="flex justify-between border-b pb-8">
         <h1 className="font-semibold text-2xl">Shopping Cart</h1>
         <h2 className="font-semibold text-2xl">
-          {cart.length}{" "}
-          {cart.length === 1 ? "Item" : "Items"}
+          {totalItems}{" "}
+          {totalItems === 1 ? "Item" : "Items"}
         </h2>
       </div>
       {cart.map((item) => (
-        <CartItem key={item.id} cartitem={item} />
+        <CartItem key={item._id} cartitem={item} />
       ))}
       {/* Empty Cart State */}
       {cart.length === 0 && (

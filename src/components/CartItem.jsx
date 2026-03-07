@@ -1,12 +1,15 @@
-
+import React from 'react';
+import {formatMoney} from '../utils/money'
 const CartItem = ({ cartitem }) => {
+  const { product, color, size, count } = cartitem;
+
   return (
     <div className="md:flex items-stretch py-8 border-t border-gray-200">
 
       <div className="md:w-4/12 2xl:w-1/4 w-full">
         <img
-          src={cartitem.image}
-          alt={cartitem.name}
+          src={product.image}
+          alt={product.name}
           className="w-full h-64 md:h-full object-cover rounded"
         />
       </div>
@@ -14,13 +17,12 @@ const CartItem = ({ cartitem }) => {
       <div className="md:pl-6 md:w-8/12 2xl:w-3/4 flex flex-col justify-center">
 
         <div className="flex items-center justify-between w-full">
-          <p className="text-lg font-bold text-gray-800">
-            {cartitem.name}
-          </p>
+          <p className="text-lg font-bold text-gray-800">{product.name}</p>
 
           <select
             aria-label="Select quantity"
             className="py-2 px-2 border border-gray-300 focus:outline-none"
+            defaultValue={count}
           >
             <option>01</option>
             <option>02</option>
@@ -28,44 +30,46 @@ const CartItem = ({ cartitem }) => {
           </select>
         </div>
 
-        <p className="text-sm text-gray-600 pt-2">
-          {cartitem.longDescription}
-        </p>
+        {product.longDescription && (
+          <p className="text-sm text-gray-600 pt-2">{product.longDescription}</p>
+        )}
 
-        {cartitem.colors && (
+        {product.colors && product.colors.length > 0 && (
           <p className="text-sm text-gray-600 py-2">
             Select Color:
-            <select className="bg-gray-100 p-1 rounded-2xl">
-              {cartitem.colors.map((color, index) => (
-                <option key={index}>{color}</option>
+            <select className="bg-gray-100 p-1 rounded-2xl ml-2" defaultValue={color}>
+              {product.colors.map((c, index) => (
+                <option key={index} value={c}>{c}</option>
               ))}
             </select>
           </p>
         )}
 
-        <p>
-          Select Size:
-          <select className="bg-gray-100 p-1 rounded-2xl">
-            {cartitem.sizes.map((size, index) => (
-              <option key={index}>{size}</option>
-            ))}
-          </select>
-        </p>
+        {product.sizes && product.sizes.length > 0 && (
+          <p>
+            Select Size:
+            <select className="bg-gray-100 p-1 rounded-2xl ml-2" defaultValue={size}>
+              {product.sizes.map((s, index) => (
+                <option key={index} value={s}>{s}</option>
+              ))}
+            </select>
+          </p>
+        )}
+
+        {product.inStock !== undefined && (
+          <p>
+            {product.inStock ? (
+              <span className="text-green-600 font-semibold">
+                In Stock ({product.stockCount} available)
+              </span>
+            ) : (
+              <span className="text-red-600 font-semibold">Out of Stock</span>
+            )}
+          </p>
+        )}
 
         <p>
-          {cartitem.inStock ? (
-            <span className="text-green-600 font-semibold">
-              In Stock ({cartitem.stockCount} available)
-            </span>
-          ) : (
-            <span className="text-red-600 font-semibold">
-              Out of Stock
-            </span>
-          )}
-        </p>
-
-        <p>
-          Rating: {cartitem.rating} / 5 ({cartitem.reviewCount} reviews)
+          Rating: {product.rating} / 5 ({product.reviewCount} reviews)
         </p>
 
         <div className="flex items-center justify-between pt-5">
@@ -79,7 +83,7 @@ const CartItem = ({ cartitem }) => {
           </div>
 
           <p className="text-lg font-bold text-gray-800">
-            ${cartitem.price}
+            {formatMoney(product.price)}
           </p>
         </div>
 

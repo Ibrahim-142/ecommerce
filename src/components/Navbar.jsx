@@ -3,6 +3,7 @@ import { Search, ShoppingCart, Package, Home as HomeIcon } from "lucide-react";
 import { Link } from "react-router";
 
 const Navbar = ({cartsize}) => {
+  console.log('Navbar received cartsize:', cartsize); 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50 text-slate-800 px-6 py-4 flex items-center gap-4">
       {/* Left */}
