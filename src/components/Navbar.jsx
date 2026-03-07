@@ -1,9 +1,11 @@
-import React from "react";
 import { Search, ShoppingCart, Package, Home as HomeIcon } from "lucide-react";
 import { Link } from "react-router";
+import { useCart } from "../contexts/CartContext/useCart"; 
 
-const Navbar = ({cartsize}) => {
-  console.log('Navbar received cartsize:', cartsize); 
+const Navbar = () => {
+  const { totalItems } = useCart(); 
+  console.log("Navbar received totalItems:", totalItems);
+
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50 text-slate-800 px-6 py-4 flex items-center gap-4">
       {/* Left */}
@@ -45,11 +47,9 @@ const Navbar = ({cartsize}) => {
           className="relative flex items-center gap-2 leading-none cursor-pointer hover:text-blue-600 transition"
         >
           <ShoppingCart size={25} />
-
           <span className="hidden sm:inline">Cart</span>
-
           <p className="absolute -top-3.5 left-1 font-bold rounded-full flex items-center justify-center text-xs bg-blue-700 text-white w-5 h-5">
-            {cartsize}
+            {totalItems || 0} {/* fallback to 0 */}
           </p>
         </Link>
       </div>

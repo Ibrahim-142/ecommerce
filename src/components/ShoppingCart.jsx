@@ -1,8 +1,9 @@
 import React from "react";
 import { Link } from "react-router";
 import CartItem from "./CartItem";
-const ShoppingCart = ({cart}) => {
-    const totalItems = cart.reduce((sum, item) => sum + item.count, 0);
+import { useCart } from "../contexts/CartContext/useCart";
+const ShoppingCart = () => {
+  const { cart,totalItems } = useCart();
   return (
     <div className="w-full sm:w-3/4 bg-white px-6 sm:px-10 py-10">
       {/* Header */}
@@ -22,9 +23,6 @@ const ShoppingCart = ({cart}) => {
           Your cart is empty.
         </div>
       )}
-
-
-
       {/* Continue Shopping */}
       <Link
         to="/"
