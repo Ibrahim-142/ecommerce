@@ -36,7 +36,7 @@ const Navbar = ({cartsize}) => {
           to="/orders"
           className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition"
         >
-          <Package size={20} />
+          <Package size={22} />
           <span className="hidden sm:inline">Orders</span>
         </Link>
         <Link
