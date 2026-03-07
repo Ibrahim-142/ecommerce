@@ -2,7 +2,7 @@ import React from "react";
 import { Search, ShoppingCart, Package, Home as HomeIcon } from "lucide-react";
 import { Link } from "react-router";
 
-const Navbar = () => {
+const Navbar = ({cartsize}) => {
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50 text-slate-800 px-6 py-4 flex items-center gap-4">
       {/* Left */}
@@ -36,15 +36,20 @@ const Navbar = () => {
           to="/orders"
           className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition"
         >
-          <Package size={18} />
+          <Package size={20} />
           <span className="hidden sm:inline">Orders</span>
         </Link>
         <Link
           to="/checkout"
-          className="flex items-center gap-2 cursor-pointer hover:text-blue-600 transition"
+          className="relative flex items-center gap-2 leading-none cursor-pointer hover:text-blue-600 transition"
         >
-          <ShoppingCart size={18} />
+          <ShoppingCart size={25} />
+
           <span className="hidden sm:inline">Cart</span>
+
+          <p className="absolute -top-3.5 left-1 font-bold rounded-full flex items-center justify-center text-xs bg-blue-700 text-white w-5 h-5">
+            {cartsize}
+          </p>
         </Link>
       </div>
     </nav>

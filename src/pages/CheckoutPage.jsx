@@ -1,12 +1,6 @@
-import { useEffect ,useState} from 'react';
 import OrderSummary from '../components/OrderSummary';
 import ShoppingCart from '../components/ShoppingCart';
-import { shoppingcart} from '../data/shoppingcart';
-const CheckoutPage = () => {
-  const [cart,setCart] = useState([]);
-  useEffect(() => {
-    setCart(shoppingcart);
-  }, []);
+const CheckoutPage = ({cart}) => {
 
   return (
     <>

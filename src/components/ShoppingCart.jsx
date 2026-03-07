@@ -12,8 +12,8 @@ const ShoppingCart = ({cart}) => {
           {cart.length === 1 ? "Item" : "Items"}
         </h2>
       </div>
-      {cart.map((item, index) => (
-        <CartItem key={index} cartitem={item} />
+      {cart.map((item) => (
+        <CartItem key={item.id} cartitem={item} />
       ))}
       {/* Empty Cart State */}
       {cart.length === 0 && (

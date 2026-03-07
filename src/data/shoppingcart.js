@@ -5,6 +5,7 @@ export const shoppingcart = [
         longDescription: "Crafted from 100% Italian linen, this shirt is the epitome of effortless elegance. The relaxed fit drapes beautifully, while the mother-of-pearl buttons add a refined touch. Perfect for beach weddings, summer brunches, or any occasion where you want to look polished without overheating.",
     price: 129,
     category: "clothing",
+    count:2,
     colors: ["White", "Sky Blue", "Sage Green", "Sand"],
     sizes: ["S", "M", "L", "XL", "XXL"],
     inStock: true,
@@ -22,6 +23,7 @@ export const shoppingcart = [
     longDescription:
       "Handcrafted from genuine calf leather, these loafers combine comfort and sophistication. A wardrobe essential for the modern gentleman.",
     price: 199,
+    count:3,
     category: "footwear",
     subcategory: "shoes",
     colors: ["Black", "Brown", "Tan"],
