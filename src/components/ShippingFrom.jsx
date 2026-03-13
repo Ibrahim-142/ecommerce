@@ -2,7 +2,7 @@ import React from "react";
 
 const ShippingForm = ({ formData, handleChange, handleSubmit, errors, cities }) => {
   return (
-    <form onSubmit={handleSubmit} className="mt-6">
+    <form onSubmit={handleSubmit} className="mt-6 mb-6">
       {/* Full Name */}
       <div className="mb-4">
         <label className="font-medium text-sm uppercase block mb-2">Full Name</label>

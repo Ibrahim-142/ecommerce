@@ -4,8 +4,6 @@ import { useCart } from "../contexts/CartContext/useCart";
 
 const Navbar = () => {
   const { totalItems } = useCart(); 
-  console.log("Navbar received totalItems:", totalItems);
-
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50 text-slate-800 px-6 py-4 flex items-center gap-4">
       {/* Left */}

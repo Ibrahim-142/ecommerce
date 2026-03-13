@@ -7,7 +7,7 @@ const CheckoutPage = () => {
       <div className="container mx-auto mt-5 ">
         <div className="sm:flex shadow-md my-10">
           <ShoppingCart  />
-          <OrderSummary />
+          <OrderSummary  />
         </div>
       </div>
     </>

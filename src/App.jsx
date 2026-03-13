@@ -3,6 +3,8 @@ import HomePage from "./pages/Homepage";
 import CheckoutPage from "./pages/CheckoutPage";
 import OrdersPage from "./pages/OrdersPage";
 import OrderDetailsPage from "./pages/OrderDetailsPage";
+import ProductDetailsPage from "./pages/ProductDetailsPage";
+
 import { Routes, Route } from "react-router";
 function App() {
   return (
@@ -13,6 +15,7 @@ function App() {
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/orders" element={<OrdersPage />} />
         <Route path="/orders/:id" element={<OrderDetailsPage />} />
+        <Route path="/product/:id" element={<ProductDetailsPage />} />
       </Routes>
     </>
   );

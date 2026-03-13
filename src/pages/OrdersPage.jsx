@@ -1,43 +1,54 @@
-import React from "react";
-
-const orders = [
-  {
-    id: "#FWB127364372",
-    date: "20.12.2023",
-    price: "$4,756",
-    status: "Pre-order",
-  },
-  {
-    id: "#FWB125467980",
-    date: "11.12.2023",
-    price: "$499",
-    status: "In transit",
-  },
-  {
-    id: "#FWB139485607",
-    date: "08.12.2023",
-    price: "$85",
-    status: "Confirmed",
-  },
-  {
-    id: "#FWB159873546",
-    date: "04.06.2023",
-    price: "$90",
-    status: "Cancelled",
-  },
-];
+import {useState, useEffect } from "react";
+import axios from "axios";
+// const orders = [
+//   {
+//     id: "#FWB127364372",
+//     date: "20.12.2023",
+//     price: "$4,756",
+//     status: "Pre-order",
+//   },
+//   {
+//     id: "#FWB125467980",
+//     date: "11.12.2023",
+//     price: "$499",
+//     status: "In transit",
+//   },
+//   {
+//     id: "#FWB139485607",
+//     date: "08.12.2023",
+//     price: "$85",
+//     status: "Confirmed",
+//   },
+//   {
+//     id: "#FWB159873546",
+//     date: "04.06.2023",
+//     price: "$90",
+//     status: "Cancelled",
+//   },
+// ];
 
 const OrdersPage = () => {
+  const [orders, setOrders] = useState([]);
+  useEffect(() => {
+    axios.get("/api/orders").then((response) => {
+      setOrders(response.data);
+    }). catch((error) => {
+      console.error("Error fetching orders:", error);
+    });
+  }, []);
+
   const getStatusStyle = (status) => {
     switch (status) {
       case "Pre-order":
         return "bg-primary-100 text-primary-800 dark:bg-primary-900 dark:text-primary-300";
-      case "In transit":
+      case "Processing":
         return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300";
       case "Confirmed":
         return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
       case "Cancelled":
         return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
+        case "Delivered":
+          return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300";
       default:
         return "";
     }
@@ -99,7 +110,7 @@ const OrdersPage = () => {
                       </dt>
                       <dd className="mt-1.5 text-base font-semibold text-gray-900 dark:text-white">
                         <a href="#" className="hover:underline">
-                          {order.id}
+                       {order._id.slice(-6).toUpperCase()}
                         </a>
                       </dd>
                     </dl>
@@ -109,7 +120,7 @@ const OrdersPage = () => {
                         Date :
                       </dt>
                       <dd className="mt-1.5 text-base font-semibold text-gray-900 dark:text-white">
-                        {order.date}
+                        {new Date(order.createdAt).toLocaleDateString()}
                       </dd>
                     </dl>
 
@@ -118,7 +129,7 @@ const OrdersPage = () => {
                         Price:
                       </dt>
                       <dd className="mt-1.5 text-base font-semibold text-gray-900 dark:text-white">
-                        {order.price}
+                        ${order.totalAmount.toFixed(2)}
                       </dd>
                     </dl>
 
@@ -168,45 +179,7 @@ const OrdersPage = () => {
               </div>
             </div>
 
-            {/* Pagination (unchanged UI) */}
-            <nav
-              className="mt-6 flex items-center justify-center sm:mt-8"
-              aria-label="Page navigation example"
-            >
-              <ul className="flex h-8 items-center -space-x-px text-sm">
-                <li>
-                  <a
-                    href="#"
-                    className="flex h-8 items-center justify-center border px-3"
-                  >
-                    Prev
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="flex h-8 items-center justify-center border px-3">
-                    1
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="flex h-8 items-center justify-center border px-3">
-                    2
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="flex h-8 items-center justify-center border px-3">
-                    3
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="flex h-8 items-center justify-center border px-3"
-                  >
-                    Next
-                  </a>
-                </li>
-              </ul>
-            </nav>
+         
 
           </div>
         </div>

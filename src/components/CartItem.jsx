@@ -1,92 +1,120 @@
-import React from 'react';
-import {formatMoney} from '../utils/money'
-const CartItem = ({ cartitem }) => {
-  const { product, color, size, count } = cartitem;
+// CartItem.jsx
+import React, { useState } from "react";
+import { formatMoney } from "../utils/money";
+import { useCart } from "../contexts/CartContext/useCart";
+
+const CartItem = ({cartitem }) => {
+  const { addToCart, removeFromCart } =useCart();
+  const { product, color: initialColor, size: initialSize } = cartitem;
+
+  const [color, setColor] = useState(initialColor || product.colors?.[0] || "");
+  const [size, setSize] = useState(initialSize || product.sizes?.[0] || "");
+
+  // Add one more of this variant
+  const handleAddToCart = () => {
+    addToCart(product, color, size);
+  };
+
+  // Remove this variant completely
+  const handleRemove = () => {
+    removeFromCart(product._id, color, size);
+  };
 
   return (
-    <div className="md:flex items-stretch py-8 border-t border-gray-200">
-
-      <div className="md:w-4/12 2xl:w-1/4 w-full">
-        <img
-          src={product.image}
-          alt={product.name}
-          className="w-full h-64 md:h-full object-cover rounded"
-        />
+    <div  className="md:flex items-stretch py-8 border-t border-gray-200 hover:bg-gray-50 transition rounded-lg px-4">
+      {/* Image */}
+      <div className="w-full md:w-1/2 flex justify-center items-center">
+        <div className="bg-gray-100 p-4 rounded-xl shadow-sm">
+          <img
+            src={product.image}
+            alt={product.name}
+            className="w-full max-w-md md:max-w-lg lg:max-w-xl h-auto object-contain rounded-lg"
+          />
+        </div>
       </div>
 
-      <div className="md:pl-6 md:w-8/12 2xl:w-3/4 flex flex-col justify-center">
-
+      {/* Content */}
+      <div className="md:pl-6 md:w-8/12 2xl:w-3/4 flex flex-col justify-center space-y-3">
+        {/* Title + Quantity */}
         <div className="flex items-center justify-between w-full">
-          <p className="text-lg font-bold text-gray-800">{product.name}</p>
+          <p className="text-xl font-semibold text-gray-900 tracking-tight">
+            {product.name} <span className="text-gray-800 font-normal ml-2">({cartitem.size})</span>
+          </p>
 
-          <select
-            aria-label="Select quantity"
-            className="py-2 px-2 border border-gray-300 focus:outline-none"
-            defaultValue={count}
-          >
-            <option>01</option>
-            <option>02</option>
-            <option>03</option>
-          </select>
+          <p className="text-sm text-gray-600">Qty: {cartitem.count}</p>
         </div>
 
+        {/* Description */}
         {product.longDescription && (
-          <p className="text-sm text-gray-600 pt-2">{product.longDescription}</p>
+          <p className="text-sm text-gray-600 leading-relaxed">{product.longDescription}</p>
         )}
 
-        {product.colors && product.colors.length > 0 && (
-          <p className="text-sm text-gray-600 py-2">
-            Select Color:
-            <select className="bg-gray-100 p-1 rounded-2xl ml-2" defaultValue={color}>
-              {product.colors.map((c, index) => (
-                <option key={index} value={c}>{c}</option>
+        {/* Color */}
+        {product.colors?.length > 0 && (
+          <p className="text-sm text-gray-600 flex items-center gap-2">
+            <span className="font-medium text-gray-700">Color:</span>
+            <select
+              className="bg-gray-100 border border-gray-200 p-1 rounded-lg text-sm"
+              value={color}
+              onChange={(e) => setColor(e.target.value)}
+            >
+              {product.colors.map((c, idx) => (
+                <option key={idx} value={c}>{c}</option>
               ))}
             </select>
           </p>
         )}
 
-        {product.sizes && product.sizes.length > 0 && (
-          <p>
-            Select Size:
-            <select className="bg-gray-100 p-1 rounded-2xl ml-2" defaultValue={size}>
-              {product.sizes.map((s, index) => (
-                <option key={index} value={s}>{s}</option>
+        {/* Size */}
+        {product.sizes?.length > 0 && (
+          <p className="text-sm text-gray-600 flex items-center gap-2">
+            <span className="font-medium text-gray-700">Size:</span>
+            <select
+              className="bg-gray-100 border border-gray-200 p-1 rounded-lg text-sm"
+              value={size}
+              onChange={(e) => setSize(e.target.value)}
+            >
+              {product.sizes.map((s, idx) => (
+                <option key={idx} value={s}>{s}</option>
               ))}
             </select>
           </p>
         )}
 
+        {/* Stock */}
         {product.inStock !== undefined && (
-          <p>
+          <p className="text-sm">
             {product.inStock ? (
-              <span className="text-green-600 font-semibold">
-                In Stock ({product.stockCount} available)
+              <span className="text-green-600 font-medium">
+                ✓ In Stock ({product.stockCount} available)
               </span>
             ) : (
-              <span className="text-red-600 font-semibold">Out of Stock</span>
+              <span className="text-red-600 font-medium">✕ Out of Stock</span>
             )}
           </p>
         )}
 
-        <p>
-          Rating: {product.rating} / 5 ({product.reviewCount} reviews)
-        </p>
-
-        <div className="flex items-center justify-between pt-5">
-          <div className="flex items-center space-x-5">
-            <button className="text-sm underline text-gray-800 cursor-pointer">
+        {/* Price + Buttons */}
+        <div className="flex items-center justify-between pt-4 mt-2">
+          <div className="flex items-center space-x-6">
+            <button
+              onClick={handleAddToCart}
+              className="text-sm font-medium text-gray-700 hover:text-indigo-600 transition"
+            >
               Add to Cart
             </button>
-            <button className="text-sm underline text-red-500 cursor-pointer">
+            <button
+              onClick={handleRemove}
+              className="text-sm font-medium text-red-500 hover:text-red-600 transition"
+            >
               Remove
             </button>
           </div>
 
-          <p className="text-lg font-bold text-gray-800">
-            {formatMoney(product.price)}
+          <p className="text-xl font-bold text-gray-900">
+            {formatMoney(product.price * cartitem.count)}
           </p>
         </div>
-
       </div>
     </div>
   );

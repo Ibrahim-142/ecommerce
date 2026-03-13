@@ -3,9 +3,9 @@ import { Link } from "react-router";
 import CartItem from "./CartItem";
 import { useCart } from "../contexts/CartContext/useCart";
 const ShoppingCart = () => {
-  const { cart,totalItems } = useCart();
+  const { cart,totalItems,addToCart } = useCart();
   return (
-    <div className="w-full sm:w-3/4 bg-white px-6 sm:px-10 py-10">
+    <div className="w-full sm:w-3/4 bg-white px-4 sm:px-10 py-6">
       {/* Header */}
       <div className="flex justify-between border-b pb-8">
         <h1 className="font-semibold text-2xl">Shopping Cart</h1>
@@ -14,8 +14,8 @@ const ShoppingCart = () => {
           {totalItems === 1 ? "Item" : "Items"}
         </h2>
       </div>
-      {cart.map((item) => (
-        <CartItem key={item._id} cartitem={item} />
+      {cart.map((item,index) => (
+        <CartItem key={index} addToCart={addToCart}  cartitem={item} />
       ))}
       {/* Empty Cart State */}
       {cart.length === 0 && (
@@ -26,7 +26,7 @@ const ShoppingCart = () => {
       {/* Continue Shopping */}
       <Link
         to="/"
-        className="flex font-semibold text-indigo-600 text-sm mt-10"
+        className="flex font-semibold text-indigo-600 text-sm mt-6"
       >
         <svg
           className="fill-current mr-2 w-4"
