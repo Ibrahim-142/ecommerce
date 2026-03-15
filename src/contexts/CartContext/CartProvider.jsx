@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { CartContext } from "./CartContext.js";
@@ -5,8 +6,6 @@ import { CartContext } from "./CartContext.js";
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  // Fetch cart from backend
   const fetchCart = async () => {
     try {
       const response = await axios.get("/api/cart");
@@ -22,56 +21,42 @@ export const CartProvider = ({ children }) => {
     fetchCart();
   }, []);
 
-  // Calculate total items in cart
+  // Total items in cart
   const totalItems = cart.reduce((sum, item) => sum + item.count, 0);
 
   // Add item to cart
-// CartProvider.js
-const addToCart = (product, color, size) => {
-  setCart((prevCart) => {
-    const existingItem = prevCart.find(
-      (item) =>
-        item.product._id === product._id &&
-        item.color === color &&
-        item.size === size
-    );
-
-    if (existingItem) {
-      // Increase count of existing item
-      return prevCart.map((item) =>
-        item.product._id === product._id &&
-        item.color === color &&
-        item.size === size
-          ? { ...item, count: item.count + 1 }
-          : item
+  const addToCart = (product) => {
+    setCart((prevCart) => {
+      const existingItem = prevCart.find(
+        (item) => item.product._id === product._id
       );
-    }
-    console.log("Adding new item to cart:", { product, color, size });
-    // Add new item if no match
-    return [
-      ...prevCart,
-      {
-        product,
-        count: 1,
-        color,
-        size
+
+      if (existingItem) {
+        // Increase count
+        return prevCart.map((item) =>
+          item.product._id === product._id
+            ? { ...item, count: item.count + 1 }
+            : item
+        );
       }
-    ];
-  });
-};
+
+      // Add new item
+      return [...prevCart, { product, count: 1 }];
+    });
+  };
+
   // Remove item from cart
-const removeFromCart = (productId, color, size) => {
-  setCart((prevCart) =>
-    prevCart.filter(
-      (item) =>
-        !(
-          item.product._id === productId &&
-          item.color === color &&
-          item.size === size
+  const removeFromCart = (productId) => {
+    setCart((prevCart) =>
+      prevCart
+        .map((item) =>
+          item.product._id === productId
+            ? { ...item, count: item.count - 1 }
+            : item
         )
-    )
-  );
-};
+        .filter((item) => item.count > 0)
+    );
+  };
 
   return (
     <CartContext.Provider

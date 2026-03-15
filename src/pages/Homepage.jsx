@@ -1,17 +1,5 @@
 import Card from '../components/Card';
-import axios from 'axios';
-import { useEffect, useState } from 'react';
-import {formatMoney}from '../utils/money';
-const Homepage = () => {
-  const [products, setProducts] = useState([]);
-  useEffect(() => {
-    axios.get("api/products")
-      .then((response) => {
-        setProducts(response.data);
-      })
-  }, [])
-
-
+const Homepage = ({ products }) => {
   return (
     <>
       <div className="min-h-screen p-6 flex justify-center flex-col ">
@@ -19,10 +7,7 @@ const Homepage = () => {
           {products.map((product, index) => (
             <Card
               key={index}
-              image={product.image}
-              name={product.name}
-              price={formatMoney(product.price)}
-              description={product.description}
+              product={product}
             />
           ))}
         </div>

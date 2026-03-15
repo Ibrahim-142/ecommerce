@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useCart } from "../contexts/CartContext/useCart";
 import ShippingForm from "./ShippingFrom";
 import axios from "axios";
-
+import { getTotalItems,getTotalPrice } from "../utils/cart";
+import { formatMoney ,totalPriceWithShipping} from "../utils/money";
 const OrderSummary = () => {
   const [isAddressSaved, setIsAddressSaved] = useState(false);
-  const { cartItems } = useCart();
-
+  const [shippingType,setShippingType] = useState("standard");
+  const { cart} = useCart();
+  const totalPriceCent = getTotalPrice(cart);
+  const totalItems = getTotalItems(cart);
+  let totalPrice=totalPriceWithShipping(totalPriceCent,shippingType);
   const [formData, setFormData] = useState({
     name: "",
     address: "",
@@ -39,28 +43,25 @@ const OrderSummary = () => {
       console.log("Saved Address:", formData);
     }
   };
-
+     const handleShipping = (e) => {
+      setShippingType(e.target.value);
+    }
   const handleCheckout = () => {
     if (!formData.name || !formData.address || !formData.city || !formData.postalCode) {
       return alert("Please save your shipping address first");
     }
 
-    const formattedCart = cartItems.map((item) => ({
+    const formattedCart = cart.map((item) => ({
       name: item.product.name,
       price: item.product.price,
       image: item.product.image,
       quantity: item.count,
-      color: item.color,
-      size: item.size
     }));
 
-    const totalAmount = formattedCart.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
-
+    const totalAmount = totalPrice;
+ 
     axios
-      .post("/api/placeOrder", {
+      .post("/api/orders/placeOrder", {
         cart: formattedCart,
         shippingAddress: formData,
         totalAmount
@@ -107,17 +108,20 @@ const OrderSummary = () => {
       <h1 className="font-semibold text-2xl border-b pb-8">Order Summary</h1>
 
       <div className="flex justify-between mt-10 mb-5">
-        <span className="font-semibold text-sm uppercase">Items 3</span>
-        <span className="font-semibold text-sm">590$</span>
+        <span className="font-semibold text-sm uppercase">Items {totalItems} </span>
+        <span className="font-semibold text-sm">{formatMoney(totalPriceCent)}</span>
       </div>
 
       <div>
         <label className="font-medium inline-block mb-3 text-sm uppercase">
           Shipping
         </label>
-        <select className="block p-2 text-gray-600 w-full text-sm">
-          <option>Standard shipping - $10.00</option>
-          <option>Standard shipping - $10.00</option>
+        <select 
+        value={shippingType}
+        onChange={handleShipping}
+        className="block p-2 text-gray-600 w-full text-sm">
+          <option value="standard">Standard shipping - $10.00</option>
+          <option value="express">Express shipping - $20.00</option>
         </select>
       </div>
 
@@ -143,7 +147,7 @@ const OrderSummary = () => {
       <div className="border-t mt-8">
         <div className="flex font-semibold justify-between py-6 text-sm uppercase">
           <span>Total cost</span>
-          <span>$600</span>
+          <span>{formatMoney(totalPrice)}</span>
         </div>
         <button
           onClick={handleCheckout}

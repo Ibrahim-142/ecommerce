@@ -1,5 +1,6 @@
 import {useState, useEffect } from "react";
 import axios from "axios";
+import { formatMoney } from "../utils/money";
 // const orders = [
 //   {
 //     id: "#FWB127364372",
@@ -129,7 +130,7 @@ const OrdersPage = () => {
                         Price:
                       </dt>
                       <dd className="mt-1.5 text-base font-semibold text-gray-900 dark:text-white">
-                        ${order.totalAmount.toFixed(2)}
+                        {formatMoney(order.totalAmount)}
                       </dd>
                     </dl>
 
