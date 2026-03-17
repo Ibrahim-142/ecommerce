@@ -1,6 +1,8 @@
-import React from 'react';
-import Card from '../components/Card';
-
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router";
+import axios from "axios";
+import { calculateOrderSubtotal } from "../utils/order.js";
+import { formatMoney } from "../utils/money.js"
 const orderData = {
     id: 125103,
     date: 'May 21, 2023',
@@ -51,33 +53,52 @@ const orderData = {
 };
 
 const OrderDetailsPage = () => {
-    const subtotal = orderData.items.reduce((acc, item) => acc + item.price * item.qty, 0);
-    const total = subtotal + orderData.shipping + orderData.tax;
+    const { id } = useParams();
+    const [order, setOrder] = useState(null);
+    useEffect(() => {
+        const fetchOrder = async () => {
+            try {
+                const { data } = await axios.get(`/api/orders/${id}`);
+                setOrder(data);
+
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchOrder();
+    }, [id]);
+    if (!order) {
+        return <div className="text-center py-20">Loading...</div>;
+    }
+    console.log("Order:", order)
+    const subTotal = calculateOrderSubtotal(order?.cart || []);
 
     return (
         <section className="py-24 relative bg-gray-100">
             <div className="w-full max-w-7xl px-4 md:px-5 lg:px-5 mx-auto ">
                 <div className="w-full flex-col justify-start items-start gap-12 inline-flex">
                     {/* Header */}
-                 <div className="w-full flex flex-col sm:flex-row sm:justify-between gap-6 sm:gap-12">
-  {/* Order Info */}
-  <div className="flex flex-col sm:items-start items-center gap-2">
-    <h2 className="text-gray-500 font-semibold font-manrope">
-      Order# <span className="text-indigo-600">{orderData.id}</span>
-    </h2>
-    <p className="text-gray-500 text-base font-medium leading-relaxed">{orderData.date}</p>
-  </div>
+                    <div className="w-full flex flex-col sm:flex-row sm:justify-between gap-6 sm:gap-12">
+                        {/* Order Info */}
+                        <div className="flex flex-col sm:items-start items-center gap-2">
+                            <h2 className="text-gray-500 font-semibold font-manrope">
+                                Order# <span className="text-indigo-600">{orderData.id}</span>
+                            </h2>
+                            <p className="text-gray-500 text-base font-medium leading-relaxed">{orderData.date}</p>
+                        </div>
 
-  {/* Shipping Address */}
-  <div className="flex flex-col sm:items-start items-center gap-2 max-w-full sm:max-w-xs">
-    <h6 className="text-gray-500 text-base font-normal leading-relaxed">
-      Shipping Address
-    </h6>
-    <p className="text-gray-900 text-base font-medium leading-relaxed wrap-break-word text-center sm:text-left">
-      {orderData.address}
-    </p>
-  </div>
-</div>
+                        {/* Shipping Address */}
+                        <div className="flex flex-col sm:items-start items-center gap-2 max-w-full sm:max-w-xs">
+                            <h6 className="text-gray-500 text-base font-normal leading-relaxed">
+                                Shipping Address
+                            </h6>
+                            <p className="text-gray-900 text-base font-medium leading-relaxed text-center sm:text-left">
+                                {order.shippingAddress.name}, {order.shippingAddress.address},{" "}
+                                {order.shippingAddress.city}, {order.shippingAddress.postalCode}
+                            </p>
+                        </div>
+                    </div>
 
                     {/* Tracking and Items */}
                     <div className="w-full justify-end items-start gap-8 inline-flex">
@@ -137,21 +158,17 @@ const OrderDetailsPage = () => {
                                     Order Items
                                 </h2>
                                 <div className="w-full flex-col justify-start items-start gap-5 flex pb-5 border-b border-gray-200">
-                                    {orderData.items.map((item, idx) => (
+                                    {order.cart.map((item, idx) => (
                                         <div key={idx} className="w-full justify-start items-center lg:gap-8 gap-4 grid md:grid-cols-12 grid-cols-1">
                                             <div className="md:col-span-8 col-span-12 w-full justify-start items-center lg:gap-5 gap-4 flex md:flex-row flex-col">
                                                 <img className="rounded-md object-cover" src={item.image} alt={item.name} />
                                                 <div className="w-full flex-col justify-start md:items-start items-center gap-3 inline-flex">
                                                     <h4 className="text-gray-900 text-xl font-medium leading-8">{item.name}</h4>
-                                                    <div className="flex-col justify-start md:items-start items-center gap-0.5 flex">
-                                                        <h6 className="text-gray-500 text-base font-normal leading-relaxed">Size: {item.size}</h6>
-                                                        <h6 className="text-gray-500 text-base font-normal leading-relaxed">Color: {item.color}</h6>
-                                                    </div>
                                                 </div>
                                             </div>
                                             <div className="md:col-span-4 col-span-12 justify-between items-center gap-4 flex md:flex-row flex-col">
-                                                <h4 className="text-gray-500 text-xl font-semibold leading-8">${item.price} x {item.qty}</h4>
-                                                <h4 className="text-gray-900 text-xl font-semibold leading-8">${item.price * item.qty}</h4>
+                                                <h4 className="text-gray-500 text-xl font-semibold leading-8">{formatMoney(item.price)} x {item.quantity}</h4>
+                                                <h4 className="text-gray-900 text-xl font-semibold leading-8">{formatMoney(item.price * item.quantity)}</h4>
                                             </div>
                                         </div>
                                     ))}
@@ -162,20 +179,22 @@ const OrderDetailsPage = () => {
                                     <div className="w-full pb-1.5 flex-col justify-start items-start gap-4 flex">
                                         <div className="w-full justify-between items-start gap-6 inline-flex">
                                             <h6 className="text-gray-500 text-base font-normal leading-relaxed">Subtotal</h6>
-                                            <h6 className="text-right text-gray-500 text-base font-medium leading-relaxed">${subtotal.toFixed(2)}</h6>
+                                            <h6 className="text-right text-gray-500 text-base font-medium leading-relaxed">{formatMoney(subTotal)}</h6>
                                         </div>
                                         <div className="w-full justify-between items-start gap-6 inline-flex">
                                             <h6 className="text-gray-500 text-base font-normal leading-relaxed">Shipping Charge</h6>
-                                            <h6 className="text-right text-gray-500 text-base font-medium leading-relaxed">${orderData.shipping.toFixed(2)}</h6>
+                                            <h6 className="text-right text-gray-500 text-base font-medium leading-relaxed">{formatMoney(order.shippingCost)}</h6>
                                         </div>
                                         <div className="w-full justify-between items-start gap-6 inline-flex">
-                                            <h6 className="text-gray-500 text-base font-normal leading-relaxed">Tax Fee</h6>
-                                            <h6 className="text-right text-gray-500 text-base font-medium leading-relaxed">${orderData.tax.toFixed(2)}</h6>
+                                            <h6 className="text-gray-500 text-base font-normal leading-relaxed">Shipping Type</h6>
+                                            <h6 className="text-right text-gray-500 text-base font-medium leading-relaxed">
+                                                {order.shippingType.charAt(0).toUpperCase() + order.shippingType.slice(1)}
+                                            </h6>
                                         </div>
                                     </div>
                                     <div className="w-full justify-between items-start gap-6 inline-flex">
                                         <h5 className="text-gray-900 text-lg font-semibold leading-relaxed">Total</h5>
-                                        <h5 className="text-right text-gray-900 text-lg font-semibold leading-relaxed">${total.toFixed(2)}</h5>
+                                        <h5 className="text-right text-gray-900 text-lg font-semibold leading-relaxed"></h5>
                                     </div>
                                 </div>
                             </div>

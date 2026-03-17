@@ -13,3 +13,7 @@ export function getTotalPrice(cart) {
   return total;
 
 }
+export const getShippingCost = (type) => {
+  if (type === "express") return 2000; 
+  return 1000; 
+};

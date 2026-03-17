@@ -2,12 +2,14 @@ import { useState } from "react";
 import { useCart } from "../contexts/CartContext/useCart";
 import ShippingForm from "./ShippingFrom";
 import axios from "axios";
-import { getTotalItems,getTotalPrice } from "../utils/cart";
+import { getTotalItems,getTotalPrice,getShippingCost } from "../utils/cart";
 import { formatMoney ,totalPriceWithShipping} from "../utils/money";
+import { useNavigate } from "react-router";
 const OrderSummary = () => {
   const [isAddressSaved, setIsAddressSaved] = useState(false);
   const [shippingType,setShippingType] = useState("standard");
   const { cart} = useCart();
+  const navigate=useNavigate();
   const totalPriceCent = getTotalPrice(cart);
   const totalItems = getTotalItems(cart);
   let totalPrice=totalPriceWithShipping(totalPriceCent,shippingType);
@@ -59,15 +61,20 @@ const OrderSummary = () => {
     }));
 
     const totalAmount = totalPrice;
- 
+    const shippingCost = getShippingCost(shippingType);
+        console.log("shipping cost:",shippingCost)
+    console.log("shipping type:",shippingType)
     axios
       .post("/api/orders/placeOrder", {
         cart: formattedCart,
         shippingAddress: formData,
-        totalAmount
+        totalAmount,
+        shippingCost,
+        shippingType
       })
       .then((response) => console.log("Checkout successful,Order Placed", response.data))
       .catch((error) => console.error("Checkout error:", error));
+      navigate("/orders")
   };
 
   return (
@@ -82,12 +89,6 @@ const OrderSummary = () => {
           <p>{formData.postalCode}</p>
           <button
             onClick={() => {
-              setFormData({
-                name: "",
-                address: "",
-                city: "",
-                postalCode: ""
-              });
               setIsAddressSaved(false);
             }}
             className="mt-4 bg-gray-500 hover:bg-gray-600 px-4 py-2 text-white text-xs uppercase"
@@ -151,7 +152,7 @@ const OrderSummary = () => {
         </div>
         <button
           onClick={handleCheckout}
-          className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full"
+          className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full cursor-pointer"
         >
           Checkout
         </button>

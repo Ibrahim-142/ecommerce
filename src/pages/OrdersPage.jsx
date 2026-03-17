@@ -1,39 +1,14 @@
-import {useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { formatMoney } from "../utils/money";
-// const orders = [
-//   {
-//     id: "#FWB127364372",
-//     date: "20.12.2023",
-//     price: "$4,756",
-//     status: "Pre-order",
-//   },
-//   {
-//     id: "#FWB125467980",
-//     date: "11.12.2023",
-//     price: "$499",
-//     status: "In transit",
-//   },
-//   {
-//     id: "#FWB139485607",
-//     date: "08.12.2023",
-//     price: "$85",
-//     status: "Confirmed",
-//   },
-//   {
-//     id: "#FWB159873546",
-//     date: "04.06.2023",
-//     price: "$90",
-//     status: "Cancelled",
-//   },
-// ];
-
+import { useNavigate } from "react-router";
 const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
+  const navigate = useNavigate()
   useEffect(() => {
     axios.get("/api/orders").then((response) => {
       setOrders(response.data);
-    }). catch((error) => {
+    }).catch((error) => {
       console.error("Error fetching orders:", error);
     });
   }, []);
@@ -48,8 +23,8 @@ const OrdersPage = () => {
         return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
       case "Cancelled":
         return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
-        case "Delivered":
-          return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300";
+      case "Delivered":
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300";
       default:
         return "";
     }
@@ -111,7 +86,7 @@ const OrdersPage = () => {
                       </dt>
                       <dd className="mt-1.5 text-base font-semibold text-gray-900 dark:text-white">
                         <a href="#" className="hover:underline">
-                       {order._id.slice(-6).toUpperCase()}
+                          {order._id.slice(-6).toUpperCase()}
                         </a>
                       </dd>
                     </dl>
@@ -151,7 +126,7 @@ const OrdersPage = () => {
                     <div className="w-full grid sm:grid-cols-2 lg:flex lg:w-64 lg:items-center lg:justify-end gap-4">
 
                       {order.status === "Confirmed" ||
-                      order.status === "Cancelled" ? (
+                        order.status === "Cancelled" ? (
                         <button
                           type="button"
                           className="w-full rounded-lg bg-primary-700 px-3 py-2 text-sm font-medium text-white hover:bg-primary-800 lg:w-auto"
@@ -167,12 +142,14 @@ const OrdersPage = () => {
                         </button>
                       )}
 
-                      <a
-                        href="#"
-                        className="w-full inline-flex justify-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 lg:w-auto"
+                      <button
+                        onClick={() => {
+                          navigate(`/orders/${order._id}`)
+                        }}
+                        className="w-full inline-flex cursor-pointer justify-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 lg:w-auto"
                       >
                         View details
-                      </a>
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -180,7 +157,7 @@ const OrdersPage = () => {
               </div>
             </div>
 
-         
+
 
           </div>
         </div>
