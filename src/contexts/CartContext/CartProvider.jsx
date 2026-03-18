@@ -20,43 +20,51 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     fetchCart();
   }, []);
-
-  // Total items in cart
   const totalItems = cart.reduce((sum, item) => sum + item.count, 0);
-
-  // Add item to cart
-  const addToCart = (product) => {
-    setCart((prevCart) => {
-      const existingItem = prevCart.find(
-        (item) => item.product._id === product._id
-      );
-
-      if (existingItem) {
-        // Increase count
-        return prevCart.map((item) =>
-          item.product._id === product._id
-            ? { ...item, count: item.count + 1 }
-            : item
-        );
-      }
-
-      // Add new item
-      return [...prevCart, { product, count: 1 }];
-    });
-  };
-
-  // Remove item from cart
-  const removeFromCart = (productId) => {
-    setCart((prevCart) =>
-      prevCart
-        .map((item) =>
-          item.product._id === productId
-            ? { ...item, count: item.count - 1 }
-            : item
-        )
-        .filter((item) => item.count > 0)
+const addToCart = async (product) => {
+  setCart((prevCart) => {
+    const existingItem = prevCart.find(
+      (item) => item.product._id === product._id
     );
-  };
+    if (existingItem) {
+      return prevCart.map((item) =>
+        item.product._id === product._id
+          ? { ...item, count: item.count + 1 }
+          : item
+      );
+    }
+    return [...prevCart, { product, count: 1 }];
+  });
+  try {
+    await axios.post("/api/cart/addtocart", {
+      product: product._id,
+      count: 1,
+    });
+  } catch (error) {
+    console.error("Add failed, reverting...", error);
+    fetchCart();
+  }
+};
+
+const removeFromCart = async (productId) => {
+  setCart((prevCart) =>
+    prevCart
+      .map((item) =>
+        item.product._id === productId
+          ? { ...item, count: item.count - 1 }
+          : item
+      )
+      .filter((item) => item.count > 0)
+  );
+  try {
+    await axios.post("/api/cart/removefromcart", {
+      productId,
+    });
+  } catch (error) {
+    console.error("Remove failed, reverting...", error);
+    fetchCart();
+  }
+};
 
   return (
     <CartContext.Provider

@@ -161,7 +161,11 @@ const OrderDetailsPage = () => {
                                     {order.cart.map((item, idx) => (
                                         <div key={idx} className="w-full justify-start items-center lg:gap-8 gap-4 grid md:grid-cols-12 grid-cols-1">
                                             <div className="md:col-span-8 col-span-12 w-full justify-start items-center lg:gap-5 gap-4 flex md:flex-row flex-col">
-                                                <img className="rounded-md object-cover" src={item.image} alt={item.name} />
+                                                <img
+                                                    className="rounded-md h-40 w-40 object-cover shrink-0"
+                                                    src={item.image}
+                                                    alt={item.name}
+                                                />
                                                 <div className="w-full flex-col justify-start md:items-start items-center gap-3 inline-flex">
                                                     <h4 className="text-gray-900 text-xl font-medium leading-8">{item.name}</h4>
                                                 </div>
@@ -194,7 +198,7 @@ const OrderDetailsPage = () => {
                                     </div>
                                     <div className="w-full justify-between items-start gap-6 inline-flex">
                                         <h5 className="text-gray-900 text-lg font-semibold leading-relaxed">Total</h5>
-                                        <h5 className="text-right text-gray-900 text-lg font-semibold leading-relaxed"></h5>
+                                        <h5 className="text-right text-gray-900 text-lg font-semibold leading-relaxed">{formatMoney(order.totalAmount)}</h5>
                                     </div>
                                 </div>
                             </div>
