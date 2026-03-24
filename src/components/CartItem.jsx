@@ -72,20 +72,18 @@ const CartItem = ({ cartitem }) => {
           {/* Quantity + Actions */}
           <div className="flex items-center gap-4 text-sm">
 
-            <span className="text-gray-600">
-              Qty: <strong>{cartitem.count}</strong>
-            </span>
+          
 
             <button
               onClick={handleAddToCart}
-              className="text-indigo-600 hover:text-indigo-700 font-medium"
+              className="text-indigo-600 hover:text-indigo-700 font-medium cursor-pointer"
             >
               Add one
             </button>
 
             <button
               onClick={handleRemove}
-              className="text-red-500 hover:text-red-600 font-medium"
+              className="text-red-500 hover:text-red-600 font-medium cursor-pointer"
             >
               Remove
             </button>
