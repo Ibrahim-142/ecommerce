@@ -1,34 +1,32 @@
-import React, { useState  } from "react";
+import { useState, useEffect } from "react";
 import { AuthContext } from "./AuthContext";
 import { useNavigate } from "react-router";
-import { loginUser } from "../../api/auth";
+import API from "../../api/auth"; // your axios instance
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // 🔹 track loading
+  const [loading, setLoading] = useState(true); // start as true
   const navigate = useNavigate();
 
-  // check auth on app load / refresh
-  // const checkAuth = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const res = await API.get("/auth/me");
-  //     setUser(res.data);
-  //   } catch {
-  //     setUser(null);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   checkAuth();
-  // }, []);
+  // Check auth on mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await API.get("/auth/me", { withCredentials: true });
+        setUser(res.data);
+      } catch {
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    checkAuth();
+  }, []);
 
   const login = async (data) => {
     setLoading(true);
     try {
-      const res = await loginUser(data);
+      const res = await API.post("/auth/login", data, { withCredentials: true });
       setUser(res.data.user);
       navigate("/homepage");
     } finally {
@@ -36,19 +34,19 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // const logout = async () => {
-  //   setLoading(true);
-  //   try {
-  //     await API.post("/auth/logout");
-  //     setUser(null);
-  //     navigate("/");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+  const logout = async () => {
+    setLoading(true);
+    try {
+      await API.post("/auth/logout", {}, { withCredentials: true });
+      setUser(null);
+      navigate("/");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <AuthContext.Provider value={{ user, login, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );
