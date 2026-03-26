@@ -71,7 +71,7 @@ const OrderSummary = () => {
         totalAmount,
         shippingCost,
         shippingType
-      })
+      },{withCredentials:true})
       .then((response) => console.log("Checkout successful,Order Placed", response.data))
       .catch((error) => console.error("Checkout error:", error));
       navigate("/orders")

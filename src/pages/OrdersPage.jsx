@@ -6,7 +6,7 @@ const OrdersPage = () => {
   const [orders, setOrders] = useState([]);
   const navigate = useNavigate()
   useEffect(() => {
-    axios.get("/api/orders").then((response) => {
+    axios.get("/api/orders",{ withCredentials: true }).then((response) => {
       setOrders(response.data);
     }).catch((error) => {
       console.error("Error fetching orders:", error);
