@@ -123,25 +123,7 @@ const OrdersPage = () => {
                       </dd>
                     </dl>
 
-                    <div className="w-full grid sm:grid-cols-1 lg:flex lg:w-50 lg:items-center lg:justify-center gap-1">
-
-                      {/* {order.status === "Confirmed" ||
-                        order.status === "Cancelled" ? (
-                        <button
-                          type="button"
-                          className="w-full rounded-lg bg-primary-700 px-3 py-2 text-sm font-medium text-white hover:bg-primary-800 lg:w-auto"
-                        >
-                          Order again
-                        </button>
-                      ) : (
-                        <button
-                          type="button"
-                          className="w-full rounded-lg border border-red-700 px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-700 hover:text-white lg:w-auto"
-                        >
-                          Cancel order
-                        </button>
-                      )} */}
-
+                    <div className="w-full  lg:flex lg:w-40 lg:items-center lg:justify-center">
                       <button
                         onClick={() => {
                           navigate(`/orders/${order._id}`)
