@@ -1,70 +1,106 @@
-
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useCallback } from "react";
 import axios from "axios";
 import { CartContext } from "./CartContext.js";
+import { useAuth} from "../AuthContext/useAuth.js";
 
 export const CartProvider = ({ children }) => {
+  const { user, loading: authLoading } = useAuth();
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
-  const fetchCart = async () => {
+
+  // 🔹 Deduplicate cart items by product ID
+  const deduplicateCart = (cartArray) => {
+    const map = new Map();
+    cartArray.forEach((item) => {
+      const id = item.product._id;
+      if (map.has(id)) {
+        map.get(id).count += item.count; // merge counts
+      } else {
+        map.set(id, { ...item });
+      }
+    });
+    return Array.from(map.values());
+  };
+
+  // 🔹 Fetch cart from backend
+  const fetchCart = useCallback(async () => {
+    if (!user) return;
+    setLoading(true);
     try {
-      const response = await axios.get("/api/cart");
-      setCart(response.data);
+      const res = await axios.get("/api/cart", { withCredentials: true });
+      setCart(deduplicateCart(res.data)); // ✅ replace & deduplicate
     } catch (error) {
       console.error("Error fetching cart:", error);
+      setCart([]);
     } finally {
       setLoading(false);
     }
+  }, [user]);
+
+  // 🔹 Fetch cart when user is loaded
+  useEffect(() => {
+    if (!authLoading && user) {
+      fetchCart();
+    }
+  }, [authLoading, user, fetchCart]);
+
+  // 🔹 Clear cart on logout
+  useEffect(() => {
+    if (!user) setCart([]);
+  }, [user]);
+
+  // 🔹 Total items in cart
+  const totalItems = cart.reduce((sum, item) => sum + item.count, 0);
+
+  // 🔹 Add product to cart (optimistic)
+  const addToCart = async (product, count = 1) => {
+    setCart((prev) => {
+      const existing = prev.find((i) => i.product._id === product._id);
+      if (existing) {
+        return prev.map((i) =>
+          i.product._id === product._id
+            ? { ...i, count: i.count + count }
+            : i
+        );
+      }
+      return [...prev, { product, count }];
+    });
+
+    try {
+      await axios.post(
+        "/api/cart/addtocart",
+        { product: product._id, count },
+        { withCredentials: true }
+      );
+    } catch (error) {
+      console.error("Add failed, syncing cart...", error);
+      fetchCart(); // rollback
+    }
   };
 
-  useEffect(() => {
-    fetchCart();
-  }, []);
-  const totalItems = cart.reduce((sum, item) => sum + item.count, 0);
-const addToCart = async (product) => {
-  setCart((prevCart) => {
-    const existingItem = prevCart.find(
-      (item) => item.product._id === product._id
+  // 🔹 Remove product from cart (optimistic)
+  const removeFromCart = async (productId, count = 1) => {
+    setCart((prev) =>
+      prev
+        .map((i) =>
+          i.product._id === productId
+            ? { ...i, count: i.count - count }
+            : i
+        )
+        .filter((i) => i.count > 0)
     );
-    if (existingItem) {
-      return prevCart.map((item) =>
-        item.product._id === product._id
-          ? { ...item, count: item.count + 1 }
-          : item
-      );
-    }
-    return [...prevCart, { product, count: 1 }];
-  });
-  try {
-    await axios.post("/api/cart/addtocart", {
-      product: product._id,
-      count: 1,
-    });
-  } catch (error) {
-    console.error("Add failed, reverting...", error);
-    fetchCart();
-  }
-};
 
-const removeFromCart = async (productId) => {
-  setCart((prevCart) =>
-    prevCart
-      .map((item) =>
-        item.product._id === productId
-          ? { ...item, count: item.count - 1 }
-          : item
-      )
-      .filter((item) => item.count > 0)
-  );
-  try {
-    await axios.post("/api/cart/removefromcart", {
-      productId,
-    });
-  } catch (error) {
-    console.error("Remove failed, reverting...", error);
-    fetchCart();
-  }
-};
+    try {
+      await axios.post(
+        "/api/cart/removefromcart",
+        { productId },
+        { withCredentials: true }
+      );
+    } catch (error) {
+      console.error("Remove failed, syncing cart...", error);
+      fetchCart(); // rollback
+    }
+  };
 
   return (
     <CartContext.Provider
@@ -75,6 +111,7 @@ const removeFromCart = async (productId) => {
         loading,
         addToCart,
         removeFromCart,
+        fetchCart, // optional for manual refresh
       }}
     >
       {children}
