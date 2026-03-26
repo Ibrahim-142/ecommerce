@@ -123,9 +123,9 @@ const OrdersPage = () => {
                       </dd>
                     </dl>
 
-                    <div className="w-full grid sm:grid-cols-2 lg:flex lg:w-64 lg:items-center lg:justify-end gap-4">
+                    <div className="w-full grid sm:grid-cols-1 lg:flex lg:w-50 lg:items-center lg:justify-center gap-1">
 
-                      {order.status === "Confirmed" ||
+                      {/* {order.status === "Confirmed" ||
                         order.status === "Cancelled" ? (
                         <button
                           type="button"
@@ -140,7 +140,7 @@ const OrdersPage = () => {
                         >
                           Cancel order
                         </button>
-                      )}
+                      )} */}
 
                       <button
                         onClick={() => {
