@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router";
 import axios from "axios";
 import { calculateOrderSubtotal } from "../utils/order.js";
 import { formatMoney } from "../utils/money.js";
-import { useToast } from "../contexts/ToastContext";
+import { useToast } from "../contexts/ToastContext/useToast.js";
 
 const OrderDetailsPage = () => {
   const { id } = useParams();
