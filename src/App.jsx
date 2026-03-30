@@ -12,7 +12,7 @@ import OrderDetailsPage from "./pages/OrderDetailsPage";
 import ProductDetailsPage from "./pages/ProductDetailsPage";
 import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
-
+import Chatbot from "./components/Chatbot";
 import { useAuth } from "./contexts/AuthContext/useAuth";
 
 function App() {
@@ -32,6 +32,8 @@ function App() {
     { path: "/orders", element: <OrdersPage />, public: false },
     { path: "/orders/:id", element: <OrderDetailsPage />, public: false },
     { path: "/product/:id", element: <ProductDetailsPage />, public: false },
+    { path: "/chatbot", element: <Chatbot />, public: false },
+
   ];
 
   // Find the current route
