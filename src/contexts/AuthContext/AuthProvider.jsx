@@ -14,7 +14,10 @@ export const AuthProvider = ({ children }) => {
       try {
         const res = await API.get("/auth/me", { withCredentials: true });
         setUser(res.data);
-      } catch {
+      } catch (err) {
+        if (err.response?.status !== 401) {
+          console.error(err); // only log real issues
+        }
         setUser(null);
       } finally {
         setLoading(false);
@@ -22,7 +25,18 @@ export const AuthProvider = ({ children }) => {
     };
     checkAuth();
   }, []);
-
+  const register = async (data) => {
+    setLoading(true);
+    try {
+      const res = await API.post("/auth/register", data, {
+        withCredentials: true,
+      });
+      setUser(res.data.user);
+      navigate("/");
+    } finally {
+      setLoading(false);
+    }
+  };
   const login = async (data) => {
     setLoading(true);
     try {
@@ -46,7 +60,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, register, loading }}>
       {children}
     </AuthContext.Provider>
   );

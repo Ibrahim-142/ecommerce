@@ -14,6 +14,7 @@ import LoginPage from "./pages/LoginPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import Chatbot from "./components/Chatbot";
 import { useAuth } from "./contexts/AuthContext/useAuth";
+import RegisterPage from "./pages/RegisterPage";
 
 function App() {
   const [products, setProducts] = useState([]);
@@ -27,6 +28,7 @@ function App() {
   // Define routes with a public flag
   const routes = [
     { path: "/", element: <LoginPage />, public: true },
+    { path: "/register", element: <RegisterPage />, public: true },
     { path: "/homepage", element: <HomePage products={products} />, public: false },
     { path: "/checkout", element: <CheckoutPage />, public: false },
     { path: "/orders", element: <OrdersPage />, public: false },

@@ -1,45 +1,75 @@
-import React from 'react';
-import User from "../assets/User.png";
-import Robot from "../assets/Robot.png";
+import { Bot, User, ShoppingCart } from "lucide-react";
 
 const ChatMessage = ({ sender, message, products }) => {
-    const isRobot = sender === "robot";
+  const isRobot = sender === "robot";
 
-    return (
-        <div className={`flex items-center ${isRobot ? "self-start" : "self-end"}`}>
-            {isRobot && (
-                <img className="w-10 h-10 rounded-full border-2 border-gray-300" src={Robot} alt="Robot" />
-            )}
+  return (
+    <div
+      className={`flex items-end gap-2 ${
+        isRobot ? "justify-start" : "justify-end"
+      }`}
+    >
 
-            <p className={`${isRobot ? "ml-2" : "mr-2"}`}>
-                {message}
-            </p>
-
-            {products && products.length > 0 && (
-                <div
-                    className="flex flex-col h-full bg-white shadow-sm border border-slate-200 rounded-2xl overflow-hidden transition hover:shadow-md" >
-                    {products.map((product, index) => (
-                        <>
-                            <div key={index} className="h-48 w-full overflow-hidden">
-                                <img
-                                    src={product.image}
-                                    alt={product.name}
-                                    className="w-full h-full object-cover"
-                                />
-                            </div>
-                            <div className="flex flex-col flex-1 p-4">
-                                
-                            </div>
-                        </>
-                    ))}
-
-                </div>
-            )}
-            {!isRobot && (
-                <img className="w-10 h-10 rounded-full border-2 border-gray-300" src={User} alt="User" />
-            )}
+      {/* ROBOT */}
+      {isRobot && (
+        <div className="w-7 h-7 flex items-center justify-center rounded-full bg-blue-100">
+          <Bot size={16} className="text-blue-600" />
         </div>
-    );
-}
+      )}
+
+      {/* MESSAGE */}
+      <div
+        className={`flex flex-col gap-2 max-w-[75%] ${
+          isRobot ? "items-start" : "items-end"
+        }`}
+      >
+        {message && (
+          <div
+            className={`px-3 py-2 text-sm rounded-2xl leading-snug shadow-sm
+            ${
+              isRobot
+                ? "bg-blue-50 text-blue-900 rounded-bl-none border border-blue-100"
+                : "bg-blue-600 text-white rounded-br-none"
+            }`}
+          >
+            {message}
+          </div>
+        )}
+
+        {products?.length > 0 && (
+          <div className="flex flex-col gap-2">
+            {products.map((p, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-2 bg-white rounded-xl shadow-sm overflow-hidden border border-blue-100"
+              >
+                <img src={p.image} className="w-14 h-14 object-cover" />
+
+                <div className="flex-1 p-2">
+                  <div className="text-xs font-medium text-gray-800">
+                    {p.name}
+                  </div>
+
+                  <div className="flex items-center gap-1 mt-1 text-[10px] text-blue-500">
+                    <ShoppingCart size={12} />
+                    Product
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* USER */}
+      {!isRobot && (
+        <div className="w-7 h-7 flex items-center justify-center rounded-full bg-blue-600 text-white">
+          <User size={16} />
+        </div>
+      )}
+
+    </div>
+  );
+};
 
 export default ChatMessage;

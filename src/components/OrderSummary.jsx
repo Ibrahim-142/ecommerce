@@ -171,20 +171,9 @@ const OrderSummary = () => {
         </select>
       </div>
 
-      <div className="py-10">
-        <label className="font-semibold inline-block mb-3 text-sm uppercase">
-          Promo Code
-        </label>
-        <input
-          type="text"
-          placeholder="Enter your code"
-          className="p-2 text-sm w-full"
-        />
-      </div>
+ 
 
-      <button className="bg-red-500 hover:bg-red-600 px-5 py-2 text-sm text-white uppercase">
-        Apply
-      </button>
+   
 
       <div className="border-t mt-8">
         <div className="flex font-semibold justify-between py-6 text-sm uppercase">

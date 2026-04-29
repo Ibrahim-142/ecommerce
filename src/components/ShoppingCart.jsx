@@ -25,7 +25,7 @@ const ShoppingCart = () => {
       )}
       {/* Continue Shopping */}
       <Link
-        to="/"
+        to="/homepage"
         className="flex font-semibold text-indigo-600 text-sm mt-6"
       >
         <svg
