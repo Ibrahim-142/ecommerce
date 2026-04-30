@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext/useAuth";
-
+import { Link } from "react-router";
 export default function Login() {
   const [form, setForm] = useState({ username: "", password: "" });
   const [message, setMessage] = useState("");
@@ -103,7 +103,13 @@ export default function Login() {
           </div>
 
           <p className="text-center text-sm text-gray-500 mt-6">
-            Don’t have an account? <span className="text-blue-500 cursor-pointer hover:underline">Sign up</span>
+            Don’t have an account?{" "}
+            <Link
+              to="/register"
+              className="text-blue-500 cursor-pointer hover:underline"
+            >
+              Sign up
+            </Link>
           </p>
         </div>
       </div>

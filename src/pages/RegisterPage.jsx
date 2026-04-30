@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../contexts/AuthContext/useAuth";
-
+import { Link } from "react-router";
 function Register() {
   const { register } = useAuth();
 
@@ -90,11 +90,14 @@ function Register() {
           <p className="text-center text-sm text-red-500">{message}</p>
         )}
 
-        <p className="text-center text-sm text-gray-500">
-          Already have an account?{" "}
-          <span className="text-blue-500 cursor-pointer hover:underline">
+        <p className="text-center text-sm text-gray-500 mt-6">
+          Don’t have an account?{" "}
+          <Link
+            to="/"
+            className="text-blue-500 cursor-pointer hover:underline"
+          >
             Login
-          </span>
+          </Link>
         </p>
       </form>
     </div>
