@@ -4,8 +4,9 @@ import { Routes, Route, useLocation, matchPath } from "react-router";
 
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
-
+import { useSearch } from "./contexts/SearchContext/useSearch";
 import { SearchProvider } from "./contexts/SearchContext/SearchProvider";
+import { useAuth } from "./contexts/AuthContext/useAuth";
 
 import HomePage from "./pages/Homepage";
 import CheckoutPage from "./pages/CheckoutPage";
@@ -13,25 +14,41 @@ import OrdersPage from "./pages/OrdersPage";
 import OrderDetailsPage from "./pages/OrderDetailsPage";
 import ProductDetailsPage from "./pages/ProductDetailsPage";
 import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import Chatbot from "./components/Chatbot";
 
-import { useAuth } from "./contexts/AuthContext/useAuth";
-import RegisterPage from "./pages/RegisterPage";
-
 function App() {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+const { query } = useSearch();
   const { user } = useAuth();
   const location = useLocation();
 
-  useEffect(() => {
-    axios.get("/api/products").then((res) => setProducts(res.data));
-  }, []);
+useEffect(() => {
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+
+      const url = query
+        ? `/api/products/search?q=${query}`
+        : `/api/products`;
+
+      const res = await axios.get(url);
+      setProducts(res.data);
+
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchProducts();
+}, [query]);
 
   const routes = [
     { path: "/", element: <LoginPage />, public: true },
     { path: "/register", element: <RegisterPage />, public: true },
-    { path: "/homepage", element: <HomePage products={products} />, public: false },
+    { path: "/homepage", element: <HomePage products={products} loading={loading} />, public: false },
     { path: "/checkout", element: <CheckoutPage />, public: false },
     { path: "/orders", element: <OrdersPage />, public: false },
     { path: "/orders/:id", element: <OrderDetailsPage />, public: false },
@@ -46,7 +63,7 @@ function App() {
   const showNavbar = user && currentRoute && !currentRoute.public;
 
   return (
-    <SearchProvider>
+    <>
       {showNavbar && <Navbar />}
 
       <Routes>
@@ -60,7 +77,7 @@ function App() {
 
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
-    </SearchProvider>
+      </>
   );
 }
 
